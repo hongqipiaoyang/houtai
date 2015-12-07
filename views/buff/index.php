@@ -12,7 +12,9 @@ $js = "\n" . 'var buff_url = "'.Url::toRoute(['/buff/checkbuff']).'";';
 $js .="\n" . 'var comment_url = "'.Url::toRoute(['/buff/checkcomment']).'";';
 $js .="\n" . 'var check_url = "'.Url::toRoute(['/buff/checkpass']).'";';
 $js .="\n" . 'var top_url = "'.Url::toRoute(['/buff/checktop']).'";';
-$js .="\n" . 'var search_url = "'.Url::toRoute(['/buff/search']).'";';
+$js .="\n" . 'var search_url = "'.Url::toRoute(['/buff/index']).'";';
+$js .="\n" . 'var start_time = "'.($search['start_time'] ? $search['start_time'] : '').'";';
+$js .="\n" . 'var end_time = "'.($search['end_time'] ? $search['end_time'] : '').'";';
 
 $js .=<<<JS
 var top_num = null;
@@ -257,12 +259,6 @@ function passOrNot(obj){
     });
 };
 
-// function isTop(obj){
-//     $('#top').parent().html('<a class="button button-top" onclick="isTop(this)" val="'+top_num+'">置顶('+top_num+')</a>');
-//     top_num = $(obj).attr('val');
-//     var html = '<input type="text" name="top" id="top" value="'+top_num+'" /><input type="button" onclick="topOrNot(this)"  name="is_top" id="is_top" value="置顶" />';
-//     $(obj).parent().html(html);
-// };
 
 function topOrNot(obj){
     if(confirm('置顶后其他已置顶的题目将取消置顶')){
@@ -292,47 +288,41 @@ function deleteAtical(obj){
 //搜索
 function searchs(){
     var data = {};
-    $('.username').val() ? data.username = $('.username').val() : '';
-    $('.title').val() ? data.title=$('.title').val() : '';
-    $('#dt_start').datetimebox('getValue') ? data.dt_start = $('#dt_start').datetimebox('getValue') : '';
-    $('#dt_end').datetimebox('getValue') ? data.dt_end = $('#dt_end').datetimebox('getValue') : '';
-    $('#state :checked').val() != 0 ? data.state = $('#state :checked').val() : '';
+    data.username = $('.username').val() ? $('.username').val() : '';
+    data.title=$('.title').val() ? $('.title').val() : '';
+    data.dt_start = $('#dt_start').datetimebox('getValue') ? (Date.parse(new Date($('#dt_start').datetimebox('getValue'))))/1000 : '';
+    data.dt_end = $('#dt_end').datetimebox('getValue') ? (Date.parse(new Date($('#dt_end').datetimebox('getValue'))))/1000 : '';
+    data.state = $('#state :checked').val() != '' ? $('#state :checked').val() : '';
 
-    // $('')
-    // console.log(data);
+    var url = search_url+'?user='+data.username+'&title='+data.title+'&start_time='+data.dt_start+'&end_time='+data.dt_end+'&state='+data.state;
+     url = encodeURI(url);
+    window.location.href = url;
 
-}
-function redict(data){
-    var url = search_url;
-    var len = data.len;
-    if (len > 1) {
-        for(v in data){
-            
-        }
-    }
-    // window.location.href = url+
 
 }
+
 
 $(function(){
     checkbox();
+    if (start_time != '') { $('#dt_start').datetimebox('setValue',start_time);  }
+    if (end_time != '') { $('#dt_end').datetimebox('setValue',end_time); }
 });
 JS;
 $this->registerJs($js,  View::POS_END);
 $num = 0;
 ?>
-
-<div class="seach-group">
-	用户名：<input class="username" type="text">&emsp;
-	标题：<input class="title" type="text">&emsp;
-	时间：<input class="time-pre easyui-datetimebox" type="text" id="dt_start" /> - <input class="time-next easyui-datetimebox" type="text" id="dt_end" />&emsp;
-    状态：<select id="state">
-            <option value="0">--请选择--</option>
-            <option value="1">已审核</option>
-            <option value="2">未审核</option>
-        </select>
-	<a class="button button-seach" onclick="searchs()">搜索</a>
-</div>
+    <div class="seach-group">
+    	用户名：<input class="username" type="text" value="<?php echo $search['user'] ? $search['user'] : ''?>">&emsp;
+    	标题：<input class="title" type="text" value="<?php echo $search['title'] ? $search['title'] : ''?>">&emsp;
+    	时间：<input class="time-pre easyui-datetimebox" type="text" id="dt_start" /> - <input class="time-next easyui-datetimebox" type="text" id="dt_end" />&emsp;
+        状态：<select id="state">
+                <option value="">--请选择--</option>
+                <option value="0"<?php echo $search['state'] ==0 ? 'selected="selected"': ''?>>&emsp;未审核</option>
+                <option value="1"<?php echo $search['state'] ==1 ? 'selected="selected"': ''?>>&ensp;审核通过</option>
+                <option value="2"<?php echo $search['state'] ==2 ? 'selected="selected"': ''?>>审核未通过</option>
+            </select>
+    	<a class="button button-seach" onclick="searchs()">搜索</a>
+    </div>
 <div class="table-list">
 	<table>
 		<tr>
@@ -349,7 +339,7 @@ $num = 0;
 		<tr val="<?php echo $v['ID']?>">
 			<td class="checkbox-out-td"><input name="checkbox" type="checkbox" value="<?php echo $v['ID']?>"></td>
 			<td><?php echo ++$num;?></td>
-			<td><?php echo $v->business_customer->nick_name?></td>
+			<td><?php echo $v['nick_name']?></td>
 			<td class="title-td title-td-unselect" onclick='titleEvent(this)'><?php echo $v['buff_title']?></td>
 			<td><?php echo date('Y-m-d H:i:s',$v['add_time'])?></td>
 			<td>

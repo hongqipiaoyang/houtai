@@ -16,15 +16,39 @@ class BuffController extends BaseController{
     //爆料列表
     public  function actionIndex() {
         $query = BuffModel::find();
+        $data_arr = ['user'=>['nick_name','like'],'title'=>['buff_title','like'],'start_time'=>['add_time','>=',0],'end_time'=>['add_time','<=',0],'state'=>['is_check','=',0]];
+        $where_info = $this->_checkget($data_arr);
+
         //分页处理
-        $pagination = new Pagination(['defaultPageSize' => 10,'totalCount' => $query->count()]);
         $filed_arr = ['sl_buff.ID','user_id','buff_title','is_check','is_top','add_time','comment_num'];
+        $count = $query->join('LEFT JOIN','business_customer','business_customer.id=sl_buff.user_id')->where($where_info[1])->asArray()->count();
+        $pagination = new Pagination(['defaultPageSize' => 10,'totalCount' => $count]);
+
+        $filed_arr = ['sl_buff.ID','user_id','buff_title','is_check','is_top','add_time','comment_num','nick_name'];
         $filed_str = implode(',', $filed_arr);
-        $data = $query->select($filed_arr)->joinWith('business_customer')->orderBy('add_time')->offset($pagination->offset)->limit($pagination->limit)->all();
-        echo $this->render('index',['data'=>$data,'pagination' => $pagination,]);
+        $data = $query->select($filed_arr)->where($where_info[1])->orderBy('add_time')->offset($pagination->offset)->limit($pagination->limit)->all();
+        echo $this->render('index',['data'=>$data,'pagination' => $pagination,'search'=>$where_info[0]]);
+    }
+    //处理搜索需要的数据
+    private function _checkget($data){
+        $request = Yii::$app->request;
+        $where[] = 'and';
+        foreach ($data  as $k => $v) {
+            $data[$k] = $request->get($k);
+            if($data[$k] != '') continue;
+            if($v[1] == 'like'){
+                $where[] = ['like',$v[0],$data[$k]];
+            }else if(isset($v[2])){
+                $where[] = $v[0].$v[1].$data[$k];
+            }else{
+                $where[] = $v[0].$v[1]."'".$data[$k]."'";
+            }
+
+        }
+        $where_dump = count($where) > 1 ? $where : '1=1';
+        return [$data,$where_dump];
     }
 
-    
 
     //通过Ajax获取爆料的详细信息
     public function actionCheckbuff(){
@@ -41,10 +65,11 @@ class BuffController extends BaseController{
     //通过Ajax获取爆料相应的评论信息
     public function actionCheckcomment(){
         $request = Yii::$app->request;
-        if(!$request->isAjax) return false;
+        // if(!$request->isAjax) return false;
         $id = intval($request->get('buff_id'));
         $filed_arr = ['id','buff_id','user_id','content','save_time'=>'time','nick_name'=>'username'];
         $data_thumb = CommentModel::find()->joinWith('business_customer')->where(['buff_id'=>$id])->all();
+        // var_dump($data_thumb);
         foreach ($data_thumb as $k => $v){
             $data_comment[$k] = $this->_checkAjaxInfo($v, $filed_arr);
             $data_id[$k] = $data_comment[$k]['id'];
@@ -52,15 +77,20 @@ class BuffController extends BaseController{
         //获取评论相关的回复信息
         $data_reply = array();
         $data_reply_thumb = ReplyModel::find()->joinWith('business_customer')->where(['comment_id'=>$data_id])->all();
-        if($data_reply_thumb) return json_encode('暂无评论');
+        if(!$data_reply_thumb) return json_encode('暂无评论');
         $filed_arr = ['id','comment_id'=>'com_id','user_id','content','p_user_id','p_reply_id','save_time','nick_name'=>'username'];
         foreach ($data_reply_thumb as $v){
             $data_reply[] = $this->_checkAjaxInfo($v, $filed_arr);
         }
+        $comment_info = $this->_CheckCommentInfo($data_comment,$data_reply);
+
     }
     //将评论和回复递归处理
-    private function _CheckCommentInfo(){
-
+    private function _CheckCommentInfo($comment,$reply){
+        if(!$comment || !$reply) return '暂无评论';
+        foreach ($comment as $key => $value) {
+            
+        }
     }
 
     //处理获取的信息
