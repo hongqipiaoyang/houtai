@@ -6,9 +6,10 @@
 use yii\helpers\Html;
 use app\assets\AppAsset;
 use yii\web\View;
+use yii\helpers\Url;
 
 AppAsset::register($this);
-$this->registerJs('navList(12);', View::POS_END); 
+$this->registerJs('navList(12);', View::POS_END);
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -55,7 +56,7 @@ $this->registerJs('navList(12);', View::POS_END);
             <a href=''>工单处理2</a>
             <a href=''>工单处理3</a>
             <a href=''>工单处理4</a>
-            <a href=''>工单处理5</a>          
+            <a href=''>工单处理5</a>
            </div>
         </li>
         <li>
@@ -134,6 +135,9 @@ $this->registerJs('navList(12);', View::POS_END);
 								<li>></li>
 								<li><a href="#">最新公告</a></li>
 						</ul>
+                        <?php if(isset($this->params['return'])){ ?>
+                        <a href="<?php echo $this->params['return']?>" class="returns"></a>
+                        <?php }?>
 			</div>
                         <!--主要内容-->
 			<div class="main">

@@ -35,7 +35,7 @@ class BuffController extends BaseController{
         $where[] = 'and';
         foreach ($data  as $k => $v) {
             $data[$k] = $request->get($k);
-            if($data[$k] != '') continue;
+            if($data[$k] == '') continue;
             if($v[1] == 'like'){
                 $where[] = ['like',$v[0],$data[$k]];
             }else if(isset($v[2])){
@@ -89,7 +89,7 @@ class BuffController extends BaseController{
     private function _CheckCommentInfo($comment,$reply){
         if(!$comment || !$reply) return '暂无评论';
         foreach ($comment as $key => $value) {
-            
+
         }
     }
 

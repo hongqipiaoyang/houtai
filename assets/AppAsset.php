@@ -18,7 +18,8 @@ class AppAsset extends AssetBundle
     public $basePath = '@webroot';
     public $baseUrl = '@web';
     public $css = [
-        'static/css/easyui.css',
+        'static/easyui/theme/default/easyui.css',
+        'static/easyui/theme/icon.css',
         'static/css/style.css',
         'static/css/public.css',
         'static/css/table.css',
@@ -27,6 +28,7 @@ class AppAsset extends AssetBundle
     public $js = [
         'static/js/jquery-1.8.3.min.js',
         'static/js/jquery.easyui.min.js',
+        'static/easyui/easyui-lang-zh_CN.js',
         'static/js/menu.js',
         'static/js/public.js'
     ];

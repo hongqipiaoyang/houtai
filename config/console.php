@@ -26,6 +26,14 @@ return [
             ],
         ],
         'db' => $db,
+        
+        'db2'=>[
+            'class' => 'yii\db\Connection',
+            'dsn'=>'mysql:host=221.228.229.221;dbname=Match',
+            'username' => 'clientUser',
+            'password' => '123456',
+            'charset' => 'utf8',
+            ],
     ],
     'params' => $params,
 ];

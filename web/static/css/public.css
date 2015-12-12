@@ -88,3 +88,14 @@ ul,ol{
   height: 0;
   clear: both;
 }
+.returns{
+    width: 30px;
+   height: 30px;
+   display: inline-block;
+   float: right;
+   /* background-color: black; */
+   margin-top: 8px;
+   margin-right: 10px;
+   background: url('../images/return.png') no-repeat;
+   background-size: cover;
+}

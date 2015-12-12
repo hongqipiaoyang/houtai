@@ -6,17 +6,17 @@ $config = [
     'id' => 'basic',
     //设置默认控制器
     'defaultRoute' => 'index',
-    
+
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'components' => [
         'urlManager' =>[
-            
+
             'enablePrettyUrl'=>TRUE,
             'showScriptName' => FALSE,
 //            'urlSuffix'=>'html',
             'rules' =>[
-                
+
             ],
         ],
         'request' => [
@@ -49,7 +49,25 @@ $config = [
                 ],
             ],
         ],
-        'db' => require(__DIR__ . '/db.php'),
+        // 'db' => require(__DIR__ . '/db.php'),
+        'db' =>[
+           'class' => 'yii\db\Connection',
+           // 'dsn' => 'mysql:host=221.228.229.221;dbname=caipiao',
+           'dsn' => 'mysql:host=127.0.0.1;dbname=user',
+           // 'username' => 'clientUser',
+           'username' => 'root',
+           // 'password' => '123456',
+           'password' => 'root',
+           'charset' => 'utf8',
+       //     'tablePrefix'  => 'sl_',
+            ],
+        'db2'=>[
+            'class' => 'yii\db\Connection',
+            'dsn'=>'mysql:host=221.228.229.221;dbname=Match',
+            'username' => 'clientUser',
+            'password' => '123456',
+            'charset' => 'utf8',
+            ],
     ],
     'params' => $params,
 ];

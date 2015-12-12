@@ -27,4 +27,9 @@ class HelloController extends Controller
     {
         echo $message . "\n";
     }
+
+    public function actionTime(){
+    	echo 2;
+    	//echo date('Y-m-d H:i:s');
+    }
 }
