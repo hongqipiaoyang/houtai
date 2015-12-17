@@ -40,11 +40,20 @@ class QueModel extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['add_time', 'start_time', 'stop_time', 'match_id', 'zhi_id', 'user_id', 'check_state', 'stop_state', 'match_time', 'time_option'], 'integer'],
+            [['add_time', 'start_time','que_answer', 'stop_time', 'match_id', 'zhi_id', 'user_id', 'check_state', 'stop_state', 'match_time', 'time_option'], 'integer'],
             [['que_group', 'type'], 'string'],
             [['que_content'], 'string', 'max' => 255],
-            [['que_option', 'que_answer'], 'string', 'max' => 16]
+            [['que_option'], 'string', 'max' => 16]
         ];
+    }
+
+    public function scenarios(){
+        $scenarios = parent::scenarios();
+        $scenarios['check'] = ['check_state'];
+        $scenarios['remove'] = ['stop_state'];
+        $scenarios['answer'] = ['que_answer'];
+
+        return $scenarios;
     }
 
     /**

@@ -117,10 +117,39 @@ class BuffController extends BaseController{
             $type_id_tump = $type_id == 1 ? 2 : 1;
             $buffInfo = BuffModel::findOne($id);
             $buffInfo->scenario = 'checkpass';
+            if($buffInfo->is_check == $type_id_tump ){return false;}
             $buffInfo->is_check = $type_id_tump;
             $res = $buffInfo->save();
+            if($type_id == 2 && $res){
+                $this->_checkCreditAndExper($id);
+            }
             return json_encode($res);
         }
+    }
+    //审核完毕，添加积分和分数
+
+    private function _checkCreditAndExper($id){
+        $user_id = BuffModel::find()->select('user_id')->where('id='.$id)->scalar();
+        $query = Yii::$app->db;
+        $day_start = strtotime((date('Y-m-d')).'00:00:00');
+        $day_end = strtotime((date('Y-m-d')).'23:59:59');
+        $sql = 'SELECT COUNT(*) FROM sl_user_deal WHERE user_id = 206266 AND type_id=5 AND add_time >= "'.$day_start.'" AND add_time <="'.$day_end.'";';
+        $count = $query->createCommand($sql)->queryScalar();
+        if($count > 3){ return '';}
+        $exper = $query->createCommand('select exper from business_customer where id='.$user_id)->queryScalar();
+        $credit = $query->createCommand('select credit from business_wallet where id='.$user_id)->queryScalar();
+        $res = $query->createCommand()->update('business_customer',['exper'=>($exper+50)],['id'=>$user_id])->execute();
+        $res1 = $query->createCommand()->update('business_wallet',['credit'=>($credit+100)],['id'=>$user_id])->execute();
+        var_dump($res,$res1);
+        $this->_checkDeal($id,100,5,$user_id);
+    }
+
+    private function _checkDeal($id,$money,$type,$user_id){
+
+        $query = Yii::$app->db;
+        $data = ['type_id'=>$type,'user_id'=>$user_id ,'from_id'=>$id,'money'=>$money,'add_time'=>time()];
+        $res = $query->createCommand()->insert('sl_user_deal',$data)->execute();
+        var_dump($res);
     }
 
     //处理置顶模式

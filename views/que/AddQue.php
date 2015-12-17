@@ -33,7 +33,8 @@ function submitTable(){
         // console.log(params);
         params[csrf_name] = csrf_value;
         $.post(insert_url,params,function(data){
-            console.log(data);
+            // console.log(data);
+            if(data){alert('添加成功');}
         },'json');
     })
 }
@@ -124,11 +125,10 @@ function searchMatch(){
             var comboboxData=[];
             data.forEach(function(index){
                 var match_id = !index['MatchInfoID'] ? index['BaskMatchInfoID'] : index['MatchInfoID'] ;
-                comboboxData.push({'value':index['id']+','+match_id,'text':index['Name']});
+                comboboxData.push({'value':index['id']+','+match_id,'text':index['Name']+'   '+index['Time']});
             });
-            // console.log(comboboxData);
             $('#select_match').combobox('loadData',comboboxData);
-            $('#select_match').show();
+            // $('#select_match').show();
         });
 
 }
@@ -153,7 +153,7 @@ $this->registerJs($js,  View::POS_END);
            <tr>
                <td>体育类别:</td>
                <td>
-                    <select class="easyui-combobox" id="data_sportsType" data-options='onSelect:checkTimeOption' panelHeight='auto' style="width:100px;">
+                    <select class="easyui-combobox"<?php echo isset($info['Name']) ? 'disabled="disabled"' : ''?> id="data_sportsType" data-options='onSelect:checkTimeOption' panelHeight='auto' style="width:100px;">
                         <option value="1" <?php echo  isset($info['type']) && $info['type'] == 1 ? 'selected="selected"' : '' ?>>足球</option>
                         <option value="2" <?php echo  isset($info['type']) && $info['type'] == 2 ? 'selected="selected"' : '' ?>>篮球</option>
                     </select>
@@ -189,7 +189,7 @@ $this->registerJs($js,  View::POS_END);
            <tr>
                <td>时间段:</td>
                <td>
-                    <select class="easyui-combobox" id="data_time"  data-options='valueField: "value",textField: "text"' panelHeight='auto' style="width:200px;">
+                    <select class="easyui-combobox" id="data_time"  data-options='valueField: "value",textField: "text"' panelHeight='auto' style="width:200px;" disabled="disabled">
                         <option value="0"<?php echo  isset($info['time_option']) && $info['time_option'] == 0 ? 'selected="selected"' : '' ?>>--请选择--</option>
                     <?php if(isset($info['type']) && $info['type'] == 2){?>
                         <option value="1"<?php echo  isset($info['time_option']) && $info['time_option'] == 1 ? 'selected="selected"' : '' ?>>第二节</option>

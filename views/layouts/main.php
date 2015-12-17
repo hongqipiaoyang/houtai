@@ -41,25 +41,21 @@ $this->registerJs('navList(12);', View::POS_END);
 	<div class="left_menu">
 				<ul id="nav_dot">
       <li>
-          <h4 class="M1"><span></span>系统公告</h4>
+          <h4 class="M1"><span></span>爆料管理</h4>
           <div class="list-item none">
-            <a href=''>系统公告1</a>
-            <a href=''>系统公告2</a>
-            <a href=''>系统公告3</a>
-            <a href=''>系统公告4</a>
+              <a href='<?php echo Url::toRoute('/buff')?>'>爆料查看</a>
+            
           </div>
         </li>
         <li>
-          <h4 class="M2"><span></span>工单处理</h4>
+          <h4 class="M2"><span></span>问题管理</h4>
           <div class="list-item none">
-            <a href=''>工单处理1</a>
-            <a href=''>工单处理2</a>
-            <a href=''>工单处理3</a>
-            <a href=''>工单处理4</a>
-            <a href=''>工单处理5</a>
+            <a href='<?php echo Url::toRoute('/que')?>'>问题查看</a>
+            <a href='<?php echo Url::toRoute('/que/team')?>'>最近球赛</a>
+            
            </div>
         </li>
-        <li>
+        <!--<li>
           <h4 class="M3"><span></span>基础教学</h4>
           <div class="list-item none">
             <a href=''>基础教学1</a>
@@ -123,7 +119,7 @@ $this->registerJs('navList(12);', View::POS_END);
             <a href=''>系统管理2</a>
             <a href=''>系统管理3</a>
           </div>
-        </li>
+        </li>-->
   </ul>
 		</div>
 		<div class="m-right">

@@ -1,6 +1,8 @@
 <?php 
     use yii\helpers\Html;
+    
+    
+    echo 'hello world';
+    
 ?>
 
-<div>hello world</div>
-<div><?=$data?></div>

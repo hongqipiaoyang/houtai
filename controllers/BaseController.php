@@ -35,8 +35,7 @@ class BaseController extends Controller{
             //            $this->goHome();
         }
         $bool = Yii::$app->user->isGuest;
-        //         var_dump($_SESSION);
-//        var_dump($bool);
+        
         if(!\Yii::$app->user->isGuest){
             //            $this->goHome();
         }
@@ -58,7 +57,7 @@ class BaseController extends Controller{
 
     }
 
-
+    //分页
     protected function _checkPage($totalCount){
         $request = Yii::$app->request;
         $page = $request->get('page') ? intval($request->get('page')):1;
@@ -94,6 +93,23 @@ class BaseController extends Controller{
         }
         $res = $model->save();
         return $res;
+    }
+    
+     //将一个值为数组的中一个值转化为外围数组的一个键
+    protected function _ZhiZhuanJian($data,$jian,$zhi = 0){
+        if($zhi){
+            foreach($data as $k=>$v){
+                foreach($zhi as $key => $val){
+                    $keys = is_int($key) ? $val : $key ;
+                    $new_data[$v[$jian]][$keys] = $v[$val];
+                }
+            }
+        }else{
+            foreach ($data as $k => $v) {
+                $new_data[$v[$jian]] = $v;
+            }
+        }
+        return $new_data;
     }
 }
 
